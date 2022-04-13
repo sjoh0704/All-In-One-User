@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: product
+  name: user
 spec:
   selector:
     matchLabels:
-      app: product
+      app: user
   replicas: 1
   template:
     metadata:
       labels:
-        app: product
+        app: user
     spec:
       containers:
-      - name: product-container
-        image: tmdwn0704/all-in-one-product:1.0
+      - name: user-container
+        image: tmdwn0704/all-in-one-user:1.0
         command: ["/bin/sh", "-c"]
         args:
-        - ./wait-for-it.sh product-db.default.svc:3306 -t 0;
+        - ./wait-for-it.sh user-db.default.svc:3306 -t 0;
           python3 manage.py makemigrations item;
           python3 manage.py migrate;
           python3 manage.py loaddata item/fixtures/data.json;
@@ -27,9 +27,9 @@ spec:
         - containerPort: 8000
         envFrom:
         - configMapRef:
-            name: product-url
+            name: user-url
         - configMapRef:
-            name: product-db
+            name: user-db
 
         livenessProbe:
           httpGet:
@@ -50,16 +50,16 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: product-db
+  name: user-db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: product-db
+      app: user-db
   template:
     metadata:
       labels:
-        app: product-db
+        app: user-db
     spec:
       containers:
       - image: mysql:5.6
@@ -68,22 +68,22 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom: 
             configMapKeyRef:
-              name: product-db
+              name: user-db
               key: MYSQL_ROOT_PASSWORD
         - name: MYSQL_DATABASE
           valueFrom: 
             configMapKeyRef:
-              name: product-db
+              name: user-db
               key: MYSQL_DB             
         ports:
         - containerPort: 3306
           name: mysql
         volumeMounts:
-        - name: product-volume
+        - name: user-volume
           mountPath: /var/lib/mysql
       volumes:
-      - name: product-volume
+      - name: user-volume
         emptyDir: {}
         ## TODO: storage class
         # persistentVolumeClaim:
-        #   claimName:  product-pvc
+        #   claimName:  user-pvc
