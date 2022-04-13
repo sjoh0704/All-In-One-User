@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: user-container
-        image: tmdwn0704/all-in-one-user:1.0
+        image: tmdwn0704/all-in-one-user:test2
         command: ["/bin/sh", "-c"]
         args:
         - ./wait-for-it.sh user-db.default.svc:3306 -t 0;
