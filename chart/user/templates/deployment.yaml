@@ -18,9 +18,8 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
         - ./wait-for-it.sh user-db.default.svc:3306 -t 0;
-          python3 manage.py makemigrations item;
+          python3 manage.py makemigrations user;
           python3 manage.py migrate;
-          python3 manage.py loaddata item/fixtures/data.json;
           python3 manage.py runserver 0.0.0.0:8000;
         imagePullPolicy: Always
         ports:
